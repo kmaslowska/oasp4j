@@ -129,4 +129,5 @@ public class OfferManagementTest extends ComponentTest {
     assertEquals(offerEntity.get(0).getSideDishId(), new Long(7));
 
   }
+
 }

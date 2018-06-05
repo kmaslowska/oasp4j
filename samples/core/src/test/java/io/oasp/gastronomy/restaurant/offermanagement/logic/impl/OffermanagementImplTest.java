@@ -1,6 +1,7 @@
 package io.oasp.gastronomy.restaurant.offermanagement.logic.impl;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.After;
@@ -12,9 +13,12 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import io.oasp.gastronomy.restaurant.offermanagement.dataaccess.api.OfferEntity;
+import io.oasp.gastronomy.restaurant.offermanagement.dataaccess.api.SpecialEntity;
 import io.oasp.gastronomy.restaurant.offermanagement.dataaccess.api.dao.OfferDao;
+import io.oasp.gastronomy.restaurant.offermanagement.dataaccess.api.dao.SpecialDao;
 import io.oasp.gastronomy.restaurant.offermanagement.logic.api.to.OfferCto;
 import io.oasp.gastronomy.restaurant.offermanagement.logic.api.to.OfferEto;
+import io.oasp.gastronomy.restaurant.offermanagement.logic.api.to.SpecialEto;
 import io.oasp.module.beanmapping.common.api.BeanMapper;
 import io.oasp.module.test.common.base.ModuleTest;
 
@@ -41,6 +45,9 @@ public class OffermanagementImplTest extends ModuleTest {
   private OfferDao offerDao;
 
   @Mock
+  private SpecialDao specialDao;
+
+  @Mock
   private BeanMapper beanMapper;
 
   /**
@@ -53,6 +60,7 @@ public class OffermanagementImplTest extends ModuleTest {
 
     this.offerManagementImpl = new OffermanagementImpl();
     this.offerManagementImpl.setOfferDao(this.offerDao);
+    this.offerManagementImpl.setSpecialDao(this.specialDao);
     this.offerManagementImpl.setBeanMapper(this.beanMapper);
   }
 
@@ -110,6 +118,59 @@ public class OffermanagementImplTest extends ModuleTest {
     // then
     assertThat(responseOfferCto).isNotNull();
     assertThat(responseOfferCto.getOffer()).isEqualTo(offerEto);
+
+  }
+
+  @Test
+  public void testSaveSpecial() {
+
+    // given
+    SpecialEto specialEto = new SpecialEto();
+
+    // when
+    SpecialEntity specialEntity = mock(SpecialEntity.class);
+    when(this.specialDao.save(specialEntity)).thenReturn(specialEntity);
+    when(this.beanMapper.map(specialEntity, SpecialEto.class)).thenReturn(specialEto);
+    when(this.beanMapper.map(specialEto, SpecialEntity.class)).thenReturn(specialEntity);
+    SpecialEto responseSpecialEto = this.offerManagementImpl.saveSpecial(specialEto);
+
+    // then
+    assertThat(responseSpecialEto).isNotNull();
+    assertThat(responseSpecialEto).isEqualTo(specialEto);
+
+  }
+
+  @Test
+  public void testFindSpecial() {
+
+    // given
+    SpecialEto specialEto = new SpecialEto();
+
+    // when
+    SpecialEntity specialEntity = mock(SpecialEntity.class);
+    when(this.specialDao.findOne(ID)).thenReturn(specialEntity);
+    when(this.beanMapper.map(specialEntity, SpecialEto.class)).thenReturn(specialEto);
+    when(this.beanMapper.map(specialEto, SpecialEntity.class)).thenReturn(specialEntity);
+    SpecialEto responseSpecialEto = this.offerManagementImpl.findSpecial(ID);
+
+    // then
+    assertThat(responseSpecialEto).isNotNull();
+    assertThat(responseSpecialEto).isEqualTo(specialEto);
+
+  }
+
+  @Test
+  public void testDeleteSpecial() {
+
+    // given
+    SpecialEto specialEto = new SpecialEto();
+
+    // when
+    SpecialEntity specialEntity = mock(SpecialEntity.class);
+    this.offerManagementImpl.deleteSpecial(ID);
+
+    // then
+    verify(this.specialDao).delete(ID);
 
   }
 
